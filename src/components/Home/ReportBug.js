@@ -44,7 +44,7 @@ class ReportBug extends Component {
                 className="validate"
                 onChange={e => this.setState({ name: e.target.value })}
               />
-              <label for="your-name">Your Name</label>
+              <label htmlFor="your-name">Your Name</label>
             </div>
             <div className="input-field col m6 s12">
               <i className="material-icons prefix">access_time</i>
@@ -54,7 +54,7 @@ class ReportBug extends Component {
                 className="materialize-textarea"
                 onChange={e => this.setState({ time: e.target.value })}
               />
-              <label for="when-occured">When the bug/error occured.</label>
+              <label htmlFor="when-occured">When the bug/error occured.</label>
             </div>
             <div className="input-field col s12">
               <i className="material-icons prefix">description</i>
@@ -64,7 +64,9 @@ class ReportBug extends Component {
                 className="materialize-textarea"
                 onChange={e => this.setState({ description: e.target.value })}
               />
-              <label for="describe-bug">Please describe what happened.</label>
+              <label htmlFor="describe-bug">
+                Please describe what happened.
+              </label>
             </div>
             <div>
               <br />

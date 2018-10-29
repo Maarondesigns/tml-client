@@ -15,18 +15,6 @@ class Home extends Component {
     if (data.user) {
       return <Dash user={data.user} />;
     } else {
-      let tabs = document.getElementById("nav-tabs");
-      let main = document.getElementById("main");
-      let bns = document.getElementById("books-and-details");
-      if (tabs) tabs.style.display = "none";
-      if (main) {
-        main.style.height = "100vh";
-        main.style.marginTop = 0;
-      }
-      if (bns) {
-        bns.style.height = "100vh";
-        bns.style.maxHeight = "100vh";
-      }
       return <SignIn />;
     }
   }

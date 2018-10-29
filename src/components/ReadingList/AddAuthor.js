@@ -68,7 +68,9 @@ class AddAuthor extends Component {
   }
 
   submitForm(e) {
-    e.preventDefault();
+    if (this.props.getUserQuery.user) {
+      e.preventDefault();
+    }
     let authorName = document.querySelector("#first_name");
     let bookName = document.querySelector("#book_name");
     let text = authorName.nextSibling;
@@ -90,16 +92,9 @@ class AddAuthor extends Component {
           name: this.state.name,
           age: this.state.age,
           userId: this.props.getUserQuery.user.id
-        },
-        refetchQueries: [
-          {
-            query: getAuthorsQuery,
-            variables: {
-              awaitRefetchQueries: true
-            }
-          }
-        ]
+        }
       })
+      .then(() => this.props.getAuthorsQuery.refetch())
       .then(() => this.submitBookAlso());
   }
 

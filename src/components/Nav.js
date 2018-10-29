@@ -26,41 +26,40 @@ class Nav extends Component {
   }
 
   displayTabs() {
-    if (this.props.getUserQuery.user) {
-      return (
-        <div id="nav-tabs">
-          <Link to="/home" className="nav-tab home" onClick={this.selectTab}>
-            HOME
-          </Link>
-          <Link
-            to="/todolist"
-            className="nav-tab todolist"
-            onClick={this.selectTab}
-          >
-            TO DO
-          </Link>
-          <Link
-            to="/readinglist"
-            className="nav-tab readinglist"
-            onClick={this.selectTab}
-          >
-            READING
-          </Link>
-          <Link
-            to="/grocerylist"
-            className="nav-tab grocerylist"
-            onClick={this.selectTab}
-          >
-            FOOD
-          </Link>
-        </div>
-      );
-    } else {
-      return <div />;
-    }
+    // if (this.props.getUserQuery.user) {
+    // } else {
+    //   return <div />;
+    // }
   }
   render() {
-    return this.displayTabs();
+    return (
+      <div id="nav-tabs">
+        <Link to="/home" className="nav-tab home" onClick={this.selectTab}>
+          HOME
+        </Link>
+        <Link
+          to="/todolist"
+          className="nav-tab todolist"
+          onClick={this.selectTab}
+        >
+          TO DO
+        </Link>
+        <Link
+          to="/readinglist"
+          className="nav-tab readinglist"
+          onClick={this.selectTab}
+        >
+          READING
+        </Link>
+        <Link
+          to="/grocerylist"
+          className="nav-tab grocerylist"
+          onClick={this.selectTab}
+        >
+          FOOD
+        </Link>
+      </div>
+    );
   }
 }
 

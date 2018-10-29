@@ -22,7 +22,9 @@ class AddGrocery extends Component {
   }
 
   submitForm(e) {
-    e.preventDefault();
+    if (this.props.getUserQuery.user) {
+      e.preventDefault();
+    }
     let name = document.querySelector("#grocery_name");
     let text = name.nextSibling;
     if (name.value.length === 0) {

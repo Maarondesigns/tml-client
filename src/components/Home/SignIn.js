@@ -5,6 +5,7 @@ import googleLogo from "../../img/google_logo.png";
 //components
 import PolicyLinks from "./PolicyLinks";
 import SupportLinks from "./SupportLinks";
+import IntroVideo from "./IntroVideo";
 
 class SignIn extends Component {
   showHelpText() {
@@ -21,9 +22,10 @@ class SignIn extends Component {
         <div id="books-and-details">
           <div className="sign-in webkit-scroll">
             <p>Hi, my name is Michael and I made an app!</p>
-            <span className="link-text" onClick={this.showAboutApp}>
+            <IntroVideo />
+            <p className="link-text" onClick={this.showAboutApp}>
               Read More <i className="material-icons tiny">arrow_downward</i>
-            </span>
+            </p>
             <div className="about-app">
               <p>
                 Have you found yourself constantly making different lists trying

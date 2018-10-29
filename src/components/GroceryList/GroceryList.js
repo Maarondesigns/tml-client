@@ -1,9 +1,13 @@
 import React, { Component } from "react";
+import { graphql, compose } from "react-apollo";
 
 //components
 import Groceries from "./Groceries";
 import AddBook from "./AddGrocery";
 import AddRecipe from "./AddRecipe";
+
+//queries
+import { getUserQuery } from "../../queries/userqueries";
 
 //functions
 import { showAddForms } from "../util_functions/showAddForms";
@@ -47,4 +51,6 @@ class GroceryList extends Component {
   }
 }
 
-export default GroceryList;
+export default compose(graphql(getUserQuery, { name: "getUserQuery" }))(
+  GroceryList
+);

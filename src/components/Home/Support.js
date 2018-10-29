@@ -21,9 +21,8 @@ const Support = () => {
         <iframe
           src="https://giphy.com/embed/IcGkqdUmYLFGE"
           width="80%"
-          height="auto"
           frameBorder="0"
-          class="giphy-embed"
+          className="giphy-embed"
           allowFullScreen
         />
         <p>

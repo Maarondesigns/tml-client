@@ -23,7 +23,9 @@ class AddRecipe extends Component {
   }
 
   submitForm(e) {
-    e.preventDefault();
+    if (this.props.getUserQuery.user) {
+      e.preventDefault();
+    }
     let name = document.querySelector("#recipe_name");
     let text = name.nextSibling;
     if (name.value.length === 0) {

@@ -7,7 +7,7 @@ html {
 }
 body {
   height: 100%;
-  background: #eee;
+  background-image: linear-gradient(#78bde2, white, #78bde2);
 }
 
 #root {
@@ -22,7 +22,7 @@ body {
   align-items: center;
   width: auto;
   height: 40px;
-  margin-top: 14px;
+  margin-top: 12.5px;
 }
 .nav-tab {
   background: var(--my-color);
@@ -35,6 +35,8 @@ body {
 .selected-tab {
   background: rgb(240, 240, 240);
   color: #444;
+  padding-bottom: 11px;
+  margin-top: 1px;
 }
 
 .user-dashboard {
@@ -47,7 +49,8 @@ body {
 .sign-in {
   grid-column: 1/3;
   text-align: center;
-  height: 90vh;
+  height: 75vh;
+  max-height: 600px;
   overflow-y: scroll;
 }
 .webkit-scroll {
@@ -131,10 +134,11 @@ body {
 #support-project,
 #report-bug {
   position: absolute;
-  top: 50%;
+  top: 10px;
   left: 50%;
-  height: 99%;
-  width: 99%;
+  height: 97%;
+  max-height: 700px;
+  width: 96%;
   max-width: 700px;
   padding-top: 20px;
   background: #ffffff;
@@ -158,11 +162,11 @@ body {
 
 @keyframes showPolicy {
   from {
-    transform: translate(-50%, -50%) scale(0.1);
+    transform: translate(-50%, 0) scale(0.1);
     z-index: 99;
   }
   to {
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(-50%, 0) scale(1);
     z-index: 99;
   }
 }
@@ -263,13 +267,10 @@ body {
   color: white;
 }
 #main h4 {
-  color: #444;
-  text-align: center;
-  margin: 0;
   padding-top: 15px;
-  border-bottom: dashed 1px black;
 }
-h5.food-titles {
+h5.food-titles,
+#main h4 {
   color: #444;
   text-align: center;
   margin: 0;
@@ -277,10 +278,15 @@ h5.food-titles {
   border-bottom: dashed 1px black;
   cursor: pointer;
 }
-h5.food-titles:hover {
+h5.food-titles:hover,
+#main h4:hover {
   color: var(--my-color);
 }
-
+h5.food-titles {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 #home {
   height: 80vh;
 }
@@ -507,6 +513,9 @@ h5.food-titles:hover {
 #add-authors {
   background: #fff;
   padding: 10px;
+  margin: 20px 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
 }
 #add-authors {
   left: 0;
@@ -531,26 +540,16 @@ h5.food-titles:hover {
   margin-top: 20px;
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 740px) {
   #main {
-    width: 600px;
+    width: 94%;
     padding: 0;
   }
   #add-forms {
-    width: 600px;
+    width: 100%;
   }
   .user-dashboard {
     display: block;
-  }
-}
-
-@media only screen and (max-width: 600px) {
-  #main {
-    width: 100%;
-    padding: 0;
-  }
-  #add-forms {
-    width: 100%;
   }
 }
 
@@ -574,16 +573,26 @@ h5.food-titles:hover {
   #main h4#food-list-title {
     border-bottom: none;
   }
-  .food-titles {
+
+  h5.food-titles {
     border-radius: 10px 10px 0 0;
     background-color: lightgray;
+    height: auto;
   }
   #book-details {
     border-radius: 10px 10px 0 0;
   }
 }
 
-@media only screen and (max-width: 350px) {
+@media only screen and (max-width: 360px) {
+  .datepicker-modal {
+    min-width: auto !important;
+  }
+  .datepicker-table,
+  .datepicker-footer,
+  .datepicker-controls {
+    width: 100% !important;
+  }
   .logout-button {
     padding: 0 8px !important;
   }

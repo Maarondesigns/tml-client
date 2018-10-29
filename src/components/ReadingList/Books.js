@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { graphql, compose } from "react-apollo";
+
+//queries
 import {
   getBooksQuery,
   getAuthorsQuery,
@@ -7,35 +9,48 @@ import {
   removeAuthorMutation,
   updateBookMutation
 } from "../../queries/bookqueries";
+import { getUserQuery } from "../../queries/userqueries";
 
 //components
 import BookDetails from "./BookDetails";
+import DisplayListItems from "../Reusable/DisplayListItems";
 
 //functions
 import { selectThis } from "../util_functions/selectThis";
 import { selectList } from "../util_functions/selectList";
-import CompleteItem from "../Reusable/CompletedButton";
 
 class Books extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selected: this.props.selected,
-      books: [],
+      books: null,
       timeouts: [],
-      filter: null
+      filter: null,
+      updating: false
     };
+    this.selectItem = this.selectItem.bind(this);
+    this.editItem = this.editItem.bind(this);
   }
 
   componentWillReceiveProps() {
     this.setState({ selected: this.props.selected });
   }
 
-  displayBooks() {
+  selectItem(e, item) {
+    let parent = e.target.parentNode;
+    this.setState({ selected: item.id, updating: false });
+    selectThis(parent);
+  }
+  editItem(e, item) {
+    let parent = e.target.parentNode;
+    this.setState({ selected: item.id, updating: true });
+    selectThis(parent);
+  }
+
+  filterByGenre() {
     let data = this.props.getBooksQuery;
-    if (data.loading === true) {
-      return <div>Loading Books...</div>;
-    } else {
+    if (data.loading === false && data.books) {
       let bookGenres = [];
       data.books.forEach(book => {
         book.genre.forEach(genre => {
@@ -44,113 +59,38 @@ class Books extends Component {
           }
         });
       });
-      let books = data.books.filter(x => x.completed !== true);
-      let completedBooks = data.books.filter(x => x.completed === true);
-
       return (
-        <div>
-          <div id="filter-by-genre">
-            <select
-              className="browser-default"
-              defaultValue="Filter By Genre"
-              onChange={e => {
-                let val = e.target.value;
-                if (val === "All Books") {
-                  this.setState({ filter: null });
-                  this.slideBookLeft();
-                } else {
-                  let bookFilter = data.books.filter(book => {
-                    return book.genre.indexOf(val) !== -1;
-                  });
-                  this.setState({ filter: bookFilter });
-                  this.slideBookLeft();
-                }
-              }}
-            >
-              <option value="Filter By Genre" disabled>
-                Filter by Genre
-              </option>
-              <option>All Books</option>
-              {bookGenres.map(genre => {
-                return <option key={genre}>{genre}</option>;
-              })}
-            </select>
-          </div>
-          {books.map(book => {
-            //CREATE LIST ITEMS FOR ALL BOOKS NOT YET COMPLETED
-            if (
-              this.state.filter === null ||
-              this.state.filter.indexOf(book) !== -1
-            ) {
-              let fontSize = { fontSize: "1.5rem" };
-              return (
-                <li className="book-li" id={book.id} key={book.id}>
-                  <CompleteItem
-                    buttonId={"delete-book"}
-                    buttonSymbol={"check"}
-                    id={book.id}
-                    thisQuery={data}
-                    thisMutation={this.props.updateBookMutation}
-                  />
-                  <div
-                    className="booklist-text truncate"
-                    onClick={e => {
-                      let parent = e.target.parentNode;
-                      this.setState({ selected: book.id });
-                      selectThis(parent);
-                    }}
-                  >
-                    {book.name}
-                  </div>
-                </li>
-              );
-            } else return <li />;
-          })}
-          {completedBooks.map(book => {
-            // LIST ITEMS FOR ALL COMPLETED BOOKS
-            if (
-              this.state.filter === null ||
-              this.state.filter.indexOf(book) !== -1
-            ) {
-              let fontSize = { fontSize: "1.5rem" };
-              return (
-                <li className="book-li" id={book.id} key={book.id}>
-                  <button
-                    id="delete-book"
-                    onClick={e => {
-                      this.setState({ books: this.props.getBooksQuery.books });
-                      this.removeBook(book.id, e.target);
-                    }}
-                  >
-                    <i className="material-icons" style={fontSize}>
-                      delete
-                    </i>
-                  </button>
-                  <div
-                    className="booklist-text truncate completed"
-                    onClick={e => {
-                      let parent = e.target.parentNode;
-                      this.setState({ selected: book.id });
-                      selectThis(parent);
-                    }}
-                  >
-                    {book.name}
-                  </div>
-                  <CompleteItem
-                    buttonId={"edit-item"}
-                    buttonSymbol={"arrow_upward"}
-                    id={book.id}
-                    thisQuery={data}
-                    thisMutation={this.props.updateBookMutation}
-                  />
-                </li>
-              );
-            } else return <li />;
-          })}
+        <div id="filter-by-genre">
+          <select
+            className="browser-default"
+            defaultValue="Filter By Genre"
+            onChange={e => {
+              let val = e.target.value;
+              if (val === "All Books") {
+                this.setState({ filter: null });
+                this.slideBookLeft();
+              } else {
+                let bookFilter = data.books.filter(book => {
+                  return book.genre.indexOf(val) !== -1;
+                });
+                this.setState({ filter: bookFilter });
+                this.slideBookLeft();
+              }
+            }}
+          >
+            <option value="Filter By Genre" disabled>
+              Filter by Genre
+            </option>
+            <option>All Books</option>
+            {bookGenres.map(genre => {
+              return <option key={genre}>{genre}</option>;
+            })}
+          </select>
         </div>
       );
     }
   }
+
   slideBookLeft() {
     let timeouts = [];
     this.props.getBooksQuery.refetch().then(data => {
@@ -181,52 +121,40 @@ class Books extends Component {
 
   componentDidUpdate() {
     let q = this.props.getBooksQuery;
-    if (q.loading === true) {
+    let user = this.props.getUserQuery.user;
+    if (q.loading === true || !user) {
       return;
     } else {
-      let previousAuthors = this.state.books.map(book => book.author.name);
-      let newAuthors = q.books.map(book => book.author.name);
-      let authorRemoved = previousAuthors.filter(
-        author => newAuthors.indexOf(author) === -1
-      );
-      if (authorRemoved.length) {
-        let author = this.props.getAuthorsQuery.authors.filter(
-          author => author.name === authorRemoved[0]
+      if (this.state.books === null) {
+        this.setState({ books: q.books });
+      } else {
+        if (q.books !== this.state.books) {
+          this.setState({ books: q.books });
+        }
+        let previousAuthors = this.state.books.map(book => book.author.name);
+        let newAuthors = q.books.map(book => book.author.name);
+        let authorRemoved = previousAuthors.filter(
+          author => newAuthors.indexOf(author) === -1
         );
-        if (author.length) {
-          this.props.removeAuthorMutation({
-            variables: {
-              id: author[0].id
-            },
-            refetchQueries: [
-              {
-                query: getAuthorsQuery
-              }
-            ]
-          });
+        if (authorRemoved.length) {
+          let author = this.props.getAuthorsQuery.authors.filter(
+            author => author.name === authorRemoved[0]
+          );
+          if (author.length) {
+            this.props.removeAuthorMutation({
+              variables: {
+                id: author[0].id
+              },
+              refetchQueries: [
+                {
+                  query: getAuthorsQuery
+                }
+              ]
+            });
+          }
         }
       }
     }
-  }
-
-  removeBook(book, button) {
-    button.classList.add("delete-button-clicked");
-    setTimeout(() => {
-      this.props.removeBookMutation({
-        variables: {
-          id: book
-        },
-        refetchQueries: [
-          {
-            query: getBooksQuery,
-            variables: {
-              awaitRefetchQueries: true
-            }
-          }
-        ]
-      });
-      this.setState({ selected: null });
-    }, 1500);
   }
 
   render() {
@@ -241,7 +169,19 @@ class Books extends Component {
           READING LIST
         </h4>
         <div id="books-and-details">
-          <ul className="book-list">{this.displayBooks()}</ul>
+          <ul className="book-list">
+            {this.filterByGenre()}
+            <DisplayListItems
+              data={this.props.getBooksQuery}
+              mutation={this.props.updateBookMutation}
+              user={this.props.getUserQuery.user}
+              type={"books"}
+              filter={this.state.filter}
+              selectItem={this.selectItem}
+              editItem={this.editItem}
+              removeItem={this.props.removeBookMutation}
+            />
+          </ul>
           <BookDetails bookId={this.state.selected} />
         </div>
       </div>
@@ -250,6 +190,7 @@ class Books extends Component {
 }
 
 export default compose(
+  graphql(getUserQuery, { name: "getUserQuery" }),
   graphql(getBooksQuery, { name: "getBooksQuery" }),
   graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
   graphql(removeBookMutation, { name: "removeBookMutation" }),

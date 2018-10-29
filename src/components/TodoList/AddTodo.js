@@ -23,6 +23,7 @@ class AddTodo extends Component {
 
   componentDidMount() {
     var elems = document.querySelectorAll(".datepicker");
+    console.log(elems);
     M.Datepicker.init(elems, {
       format: "yyyy-mm-dd",
       container: "#datepicker-container",
@@ -39,7 +40,10 @@ class AddTodo extends Component {
   }
 
   submitForm(e) {
-    e.preventDefault();
+    if (this.props.getUserQuery.user) {
+      e.preventDefault();
+    }
+
     let name = document.querySelector("#name");
     let text = name.nextSibling;
     if (name.value.length === 0) {
@@ -126,7 +130,12 @@ class AddTodo extends Component {
               <input
                 id="deadline"
                 type="text"
-                className=" datepicker validate"
+                className="datepicker validate"
+                onFocus={() => {
+                  let elem = document.querySelector(".datepicker");
+                  let instance = M.Datepicker.getInstance(elem);
+                  instance.open();
+                }}
                 onChange={e => this.setState({ deadline: e.target.value })}
               />
               <label className="active" htmlFor="deadline">

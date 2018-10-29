@@ -10,116 +10,49 @@ import {
   updateGroceryMutation,
   updateRecipeMutation
 } from "../../queries/groceryqueries";
+import { getUserQuery } from "../../queries/userqueries";
 
 //components
 import GroceryDetails from "./GroceryDetails";
+import DisplayListItems from "../Reusable/DisplayListItems";
 
 //functions
 import { selectList } from "../util_functions/selectList";
 import { selectThis } from "../util_functions/selectThis";
-import CompleteItem from "../Reusable/CompletedButton";
 
 class Groceries extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected: this.props.selected,
+      selected: null,
       timeouts: [],
       updating: false
     };
+    this.selectItem = this.selectItem.bind(this);
+    this.editItem = this.editItem.bind(this);
   }
 
   componentWillReceiveProps() {
     this.setState({ selected: this.props.selected });
   }
 
-  displayGroceries(type) {
-    let data, mutation;
-    if (type === "groceries") {
-      data = this.props.getGroceriesQuery;
-      mutation = this.props.updateGroceryMutation;
-    } else if (type === "recipes") {
-      data = this.props.getRecipesQuery;
-      mutation = this.props.updateRecipeMutation;
-    }
-    if (data.loading === true) {
-      return <div>Loading Items...</div>;
-    } else {
-      let dataType = data[type].filter(x => x.completed !== true);
-      let completedType = data[type].filter(x => x.completed === true);
-      let fontSize = { fontSize: "1.5rem" };
-      return (
-        <div>
-          {dataType.map((item, index) => {
-            return (
-              <li className="book-li" id={item.id} key={item.id}>
-                <CompleteItem
-                  buttonId={"delete-book"}
-                  buttonSymbol={"check"}
-                  id={item.id}
-                  thisQuery={data}
-                  thisMutation={mutation}
-                />
-                <div
-                  className="booklist-text"
-                  onClick={e => {
-                    let parent = e.target.parentNode;
-                    this.setState({ selected: item.id, updating: false });
-                    selectThis(parent);
-                  }}
-                >
-                  {item.name}
-                </div>
-                <button
-                  id="edit-item"
-                  onClick={e => {
-                    let parent = e.target.parentNode;
-                    this.setState({ selected: item.id, updating: true });
-                    selectThis(parent);
-                  }}
-                >
-                  <i className="material-icons" style={fontSize}>
-                    edit
-                  </i>
-                </button>
-              </li>
-            );
-          })}
-          {completedType.map((item, index) => {
-            return (
-              <li className="book-li" id={item.id} key={item.id}>
-                <button
-                  id="delete-book"
-                  onClick={e => {
-                    this.removeItem(item.id, e.target.parentNode, type);
-                  }}
-                >
-                  <i className="material-icons" style={fontSize}>
-                    delete
-                  </i>
-                </button>
-                <div className="booklist-text completed">{item.name}</div>
-                <CompleteItem
-                  buttonId={"edit-item"}
-                  buttonSymbol={"arrow_upward"}
-                  id={item.id}
-                  thisQuery={data}
-                  thisMutation={mutation}
-                />
-              </li>
-            );
-          })}
-        </div>
-      );
-    }
+  selectItem(e, item) {
+    let parent = e.target.parentNode;
+    this.setState({ selected: item.id, updating: false });
+    selectThis(parent);
+  }
+  editItem(e, item) {
+    let parent = e.target.parentNode;
+    this.setState({ selected: item.id, updating: true });
+    selectThis(parent);
   }
 
   componentDidMount() {
     let timeouts = [];
-
     this.props.getGroceriesQuery.refetch().then(data => {
       data.data.groceries.forEach((item, index) => {
         let el = document.getElementById(item.id);
+
         timeouts.push(
           setTimeout(() => {
             el.classList.add("slide-book-left");
@@ -146,31 +79,6 @@ class Groceries extends Component {
     this.state.timeouts.forEach(timeout => clearTimeout(timeout));
   }
 
-  removeItem(itemId, button, type) {
-    button.classList.add("delete-button-clicked");
-    let mutation, query;
-    if (type === "groceries") {
-      mutation = this.props.removeGroceryMutation;
-      query = getGroceriesQuery;
-    } else if (type === "recipes") {
-      mutation = this.props.removeRecipeMutation;
-      query = getRecipesQuery;
-    }
-    setTimeout(() => {
-      mutation({
-        variables: {
-          id: itemId
-        },
-        refetchQueries: [
-          {
-            query: query
-          }
-        ]
-      });
-      this.setState({ selected: null, updating: false });
-    }, 1500);
-  }
-
   render() {
     return (
       <div>
@@ -195,7 +103,15 @@ class Groceries extends Component {
               RECIPES
             </h5>
             <ul id="recipe-list" className="book-list">
-              {this.displayGroceries("recipes")}
+              <DisplayListItems
+                data={this.props.getRecipesQuery}
+                mutation={this.props.updateRecipeMutation}
+                user={this.props.getUserQuery.user}
+                type={"recipes"}
+                selectItem={this.selectItem}
+                editItem={this.editItem}
+                removeItem={this.props.removeRecipeMutation}
+              />
             </ul>
             <h5
               className="food-titles"
@@ -207,7 +123,15 @@ class Groceries extends Component {
               GROCERIES
             </h5>
             <ul id="grocery-list" className="book-list">
-              {this.displayGroceries("groceries")}
+              <DisplayListItems
+                data={this.props.getGroceriesQuery}
+                mutation={this.props.updateGroceryMutation}
+                user={this.props.getUserQuery.user}
+                type={"groceries"}
+                selectItem={this.selectItem}
+                editItem={this.editItem}
+                removeItem={this.props.removeGroceryMutation}
+              />
             </ul>
           </div>
           <GroceryDetails
@@ -221,6 +145,7 @@ class Groceries extends Component {
 }
 
 export default compose(
+  graphql(getUserQuery, { name: "getUserQuery" }),
   graphql(getGroceriesQuery, { name: "getGroceriesQuery" }),
   graphql(removeGroceryMutation, { name: "removeGroceryMutation" }),
   graphql(getRecipesQuery, { name: "getRecipesQuery" }),

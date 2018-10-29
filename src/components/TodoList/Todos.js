@@ -1,13 +1,17 @@
 import React, { Component } from "react";
 import { graphql, compose } from "react-apollo";
+
+//queries
 import {
   getTodosQuery,
   removeTodoMutation,
   updateTodoMutation
 } from "../../queries/todoqueries";
+import { getUserQuery } from "../../queries/userqueries";
 
 //components
 import TodoDetails from "./TodoDetails";
+import DisplayListItems from "../Reusable/DisplayListItems";
 
 //functions
 import { selectThis } from "../util_functions/selectThis";
@@ -22,108 +26,24 @@ class Todos extends Component {
       updating: false,
       timeouts: []
     };
+    this.selectItem = this.selectItem.bind(this);
+    this.editItem = this.editItem.bind(this);
+  }
+
+  selectItem(e, item) {
+    let parent = e.target.parentNode;
+    this.setState({ selected: item.id, updating: false });
+    selectThis(parent);
+  }
+  editItem(e, item) {
+    let parent = e.target.parentNode;
+    this.setState({ selected: item.id, updating: true });
+    selectThis(parent);
   }
 
   componentWillReceiveProps() {
     // DE-SELECT LIST ITEM WHEN ADD-FORMS BUTTON IS CLICKED
     this.setState({ selected: this.props.selected });
-  }
-
-  displayTodos() {
-    let data = this.props.getTodosQuery;
-    if (data.loading === true) {
-      return <div>Loading Todos...</div>;
-    } else {
-      let todos = data.todos.filter(x => x.completed !== true);
-      let completed = data.todos.filter(x => x.completed === true);
-
-      todos.sort(
-        (a, b) =>
-          new Date(a.deadline).getTime() - new Date(b.deadline).getTime()
-      );
-      let fontSize = { fontSize: "1.5rem" };
-      return (
-        <div>
-          {todos.map((todo, index) => {
-            //LIST OF NOT YET COMPLETED SORTED CHRONOLOGICALLY BY DEADLINE
-            let timeUntilDeadline = Math.ceil(
-              (new Date(todo.deadline).getTime() - new Date().getTime()) /
-                86400000
-            );
-            let color = `rgb(${255 - timeUntilDeadline * 10}, 146,198)`;
-
-            let textStyle = {
-              color: color
-            };
-            if (timeUntilDeadline < 0) {
-              textStyle = { color: "rgb(255,0,0", textDecoration: "underline" };
-            }
-
-            return (
-              //RETURNING THE LIST OF ITEMS NOT YET COMPLETED
-              <li className="book-li" id={todo.id} key={todo.id}>
-                <CompleteItem
-                  buttonId={"delete-book"}
-                  buttonSymbol={"check"}
-                  id={todo.id}
-                  thisQuery={data}
-                  thisMutation={this.props.updateTodoMutation}
-                />
-                <div
-                  className="booklist-text"
-                  onClick={e => {
-                    let parent = e.target.parentNode;
-                    this.setState({ selected: todo.id, updating: false });
-                    selectThis(parent);
-                  }}
-                >
-                  {todo.name}{" "}
-                  <span style={textStyle}>(in {timeUntilDeadline} days)</span>
-                </div>
-                <button
-                  id="edit-item"
-                  onClick={e => {
-                    let parent = e.target.parentNode;
-                    this.setState({ selected: todo.id, updating: true });
-                    selectThis(parent);
-                  }}
-                >
-                  <i className="material-icons" style={fontSize}>
-                    edit
-                  </i>
-                </button>
-              </li>
-            );
-          })}
-          {completed.map(todo => {
-            //LIST OF COMPLETED ITEMS AT BOTTOM
-            return (
-              <li className="book-li" id={todo.id} key={todo.id}>
-                <button
-                  id="delete-book"
-                  onClick={e => {
-                    this.deleteTodo(todo.id, e.target.parentNode);
-                  }}
-                >
-                  <i className="material-icons" style={fontSize}>
-                    delete
-                  </i>
-                </button>
-
-                <div className="booklist-text completed">{todo.name}</div>
-                <CompleteItem
-                  buttonId={"edit-item"}
-                  buttonSymbol={"arrow_upward"}
-                  id={todo.id}
-                  thisQuery={data}
-                  thisMutation={this.props.updateTodoMutation}
-                />
-              </li>
-            );
-          })}
-        </div>
-      );
-    }
   }
 
   componentDidMount() {
@@ -180,7 +100,17 @@ class Todos extends Component {
           TO DO LIST
         </h4>
         <div id="books-and-details">
-          <ul className="book-list">{this.displayTodos()}</ul>
+          <ul className="book-list">
+            <DisplayListItems
+              data={this.props.getTodosQuery}
+              mutation={this.props.updateTodoMutation}
+              user={this.props.getUserQuery.user}
+              type={"todos"}
+              selectItem={this.selectItem}
+              editItem={this.editItem}
+              removeItem={this.props.removeTodoMutation}
+            />
+          </ul>
           <TodoDetails
             updating={this.state.updating}
             todoId={this.state.selected}
@@ -192,6 +122,7 @@ class Todos extends Component {
 }
 
 export default compose(
+  graphql(getUserQuery, { name: "getUserQuery" }),
   graphql(getTodosQuery, { name: "getTodosQuery" }),
   graphql(removeTodoMutation, { name: "removeTodoMutation" }),
   graphql(updateTodoMutation, { name: "updateTodoMutation" })

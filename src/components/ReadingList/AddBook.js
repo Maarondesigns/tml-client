@@ -34,8 +34,8 @@ class AddBook extends Component {
 
   displayAuthors() {
     let data = this.props.getAuthorsQuery;
-
-    if (data.loading === true) {
+    let user = this.props.getUserQuery.user;
+    if (data.loading === true || !user) {
       return <option disabled>Authors loading...</option>;
     } else {
       return data.authors.map(author => {
@@ -49,7 +49,13 @@ class AddBook extends Component {
   }
 
   submitForm(e) {
-    e.preventDefault();
+    if (this.props.getUserQuery.user) {
+      e.preventDefault();
+    }
+    if (!this.state.authorId) {
+      alert("Select Author");
+      return;
+    }
     let name = document.querySelector("#book_name");
     let text = name.nextSibling;
     if (name.value.length === 0) {
