@@ -113,7 +113,8 @@ class SignInEmailPassword extends Component {
         error401 = "Invalid username or password.";
       }
       //post user request
-      fetch("http://192.168.0.8:4000/auth/" + signin, {
+      fetch("https://mikes-reading-list.herokuapp.com/auth/" + signin, {
+        // fetch("http://localhost:4000/auth/" + signin, {
         method: "POST",
         redirect: "follow",
         credentials: "include",
