@@ -74,23 +74,17 @@ class SignIn extends Component {
                 Sign in with Username
               </button>
               <div className="google btn btn-small sign-in-button">
-                <a
-                href="https://mikes-reading-list.herokuapp.com/auth/google"
-                className="btn"
-              >
-                {/* FOR TESTING PURPOSES____________________________ */}
-                {/* <a href="http://localhost:4000/auth/google" className=""> */}
+                <a href="https://mikes-reading-list.herokuapp.com/auth/google">
+                  {/* FOR TESTING PURPOSES____________________________ */}
+                  {/* <a href="http://192.168.0.8:4000/auth/google"> */}
                   {/* FOR TESTING PURPOSES____________________________ */}
                   <img src={googleLogo} alt="Google Logo" /> Sign in with Google
                 </a>
               </div>
               <div className="facebook btn btn-small sign-in-button">
-                <a
-                href="https://mikes-reading-list.herokuapp.com/auth/facebook"
-                className="btn"
-              >
-                {/* FOR TESTING PURPOSES____________________________ */}
-                {/* <a href="http://localhost:4000/auth/facebook" className=""> */}
+                <a href="https://mikes-reading-list.herokuapp.com/auth/facebook">
+                  {/* FOR TESTING PURPOSES____________________________ */}
+                  {/* <a href="http://192.168.0.8:4000/auth/facebook"> */}
                   {/* FOR TESTING PURPOSES____________________________ */}
                   <img src={facebookLogo} alt="Facebook Logo" /> Sign in with
                   Facebook

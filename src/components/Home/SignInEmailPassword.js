@@ -114,7 +114,7 @@ class SignInEmailPassword extends Component {
       }
       //post user request
       fetch("https://mikes-reading-list.herokuapp.com/auth/" + signin, {
-        // fetch("http://localhost:4000/auth/" + signin, {
+        // fetch("http://192.168.0.8:4000/auth/" + signin, {
         method: "POST",
         redirect: "follow",
         credentials: "include",
