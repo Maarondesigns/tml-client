@@ -103,20 +103,17 @@ class SignInEmailPassword extends Component {
       return;
     } else {
       //if no error initiate sign in
-      //set url and error message based on existing vs new user
-      let signin, error401;
+      //set url based on existing vs new user
+      let signin;
       if (this.state.newUser === true) {
         signin = "register";
-        error401 = "User already exists.";
       } else if (this.state.newUser === false) {
         signin = "login";
-        error401 = "Invalid username or password.";
       }
       //post user request
       fetch("https://mikes-reading-list.herokuapp.com/auth/" + signin, {
         // fetch("http://192.168.0.8:4000/auth/" + signin, {
         method: "POST",
-        redirect: "follow",
         credentials: "include",
         headers: {
           Accept: "application/json",
@@ -124,8 +121,11 @@ class SignInEmailPassword extends Component {
         },
         body: JSON.stringify(this.state)
       }).then(function(response) {
+        //if fails alerts with custom message
         if (response.status === 401) {
-          alert(error401);
+          response.json().then(json => {
+            alert(json.message);
+          });
         } //if successful refresh with cookies
         if (response.status === 200) {
           window.location.reload(false);
