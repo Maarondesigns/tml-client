@@ -8,7 +8,7 @@ class IntroVideo extends Component {
     if (this.state.showVideo === true) {
       return (
         <iframe
-          id=""
+          title="intro-video"
           src="https://res.cloudinary.com/travel-blog/video/upload/v1540593135/10000000_1911750812233935_7010869609694324669_n.mp4"
           width="250"
           height="400"

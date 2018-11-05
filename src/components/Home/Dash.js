@@ -4,20 +4,9 @@ import React, { Component } from "react";
 import Stats from "./Stats";
 import PolicyLinks from "./PolicyLinks";
 import SupportLinks from "./SupportLinks";
+import ProfileInfo from "./ProfileInfo";
 
 class Dash extends Component {
-  displayId() {
-    if (this.props.user.googleId) {
-      return <div>Connected using Google (ID: {this.props.user.googleId})</div>;
-    } else if (this.props.user.facebookId) {
-      return (
-        <div>
-          Connected using Facebook (ID:
-          {this.props.user.facebookId})
-        </div>
-      );
-    }
-  }
   displayAvatar() {
     if (this.props.user.avatar) {
       return <img src={this.props.user.avatar} alt="profile avatar" />;
@@ -29,6 +18,21 @@ class Dash extends Component {
       );
     }
   }
+  logout() {
+    // fetch("http://localhost:4000/auth/logout", {
+    fetch("https://mikes-reading-list.herokuapp.com/auth/logout", {
+      redirect: "follow",
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    }).then(response => {
+      if (response.status === 200) {
+        window.location.reload(false);
+      }
+    });
+  }
 
   render() {
     return (
@@ -38,35 +42,26 @@ class Dash extends Component {
           <div className="user-dashboard webkit-scroll">
             <Stats />
             <div className="sign-out">
-              <div className="profile-info">
+              <div className="profile-info card">
                 <h5>Profile Info:</h5>
                 {this.displayAvatar()}
-                <div>User Name: {this.props.user.username}</div>
-                <div>Email: {this.props.user.email}</div>
-                {this.displayId()}
-                <button className="btn btn-small logout-button">
-                  <a
-                    href="https://mikes-reading-list.herokuapp.com/auth/logout"
-                    className=""
-                  >
-                    <label>Logout</label>
-                    <i className="material-icons right">directions_run</i>
-                  </a>
-                  {/* FOR TESTING PURPOSES____________________________ */}
-                  {/* <a href="http://localhost:4000/auth/logout" className="">
-                    <label>Logout</label>
-                    <i className="material-icons right">directions_run</i>
-                  </a> */}
-                  {/* FOR TESTING PURPOSES____________________________ */}
-                </button>
+                <ProfileInfo user={this.props.user} />
               </div>
+
               <div className="dash-policy-container">
-                <div className="support-container">
+                <div className="support-container card">
                   <SupportLinks />
                 </div>
-                <div className="policy-container">
+                <div className="policy-container card">
                   <PolicyLinks />
                 </div>
+                <button
+                  className="btn btn-small logout-button"
+                  onClick={this.logout}
+                >
+                  Logout
+                  <i className="material-icons right">directions_run</i>
+                </button>
               </div>
             </div>
           </div>

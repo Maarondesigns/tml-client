@@ -25,6 +25,8 @@ const DisplayListItems = ({
     );
   } else {
     let dataType = data[type];
+    let fontSize = { fontSize: "1.5rem" };
+
     if (dataType.length === 0) {
       return (
         <li
@@ -45,9 +47,9 @@ const DisplayListItems = ({
     if (filter) {
       dataType = filter;
     }
+
     let incompleteItems = dataType.filter(x => x.completed !== true);
     let completeItems = dataType.filter(x => x.completed === true);
-    let fontSize = { fontSize: "1.5rem" };
 
     if (type === "todos") {
       incompleteItems.sort(

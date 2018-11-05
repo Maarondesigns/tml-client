@@ -6,10 +6,27 @@ import googleLogo from "../../img/google_logo.png";
 import PolicyLinks from "./PolicyLinks";
 import SupportLinks from "./SupportLinks";
 import IntroVideo from "./IntroVideo";
+import SignInEmailPassword from "./SignInEmailPassword";
 
 class SignIn extends Component {
-  showHelpText() {
-    document.querySelector(".sign-in-help-text").style.display = "block";
+  state = {
+    showing: ".social-login",
+    hiding: ".username-login"
+  };
+
+  showSignIn() {
+    let showing = this.state.showing;
+    let hiding = this.state.hiding;
+    this.setState({ showing: hiding, hiding: showing });
+    let signIn = document.querySelector(".sign-in-help");
+    signIn.classList.add("signin-animation");
+    setTimeout(() => {
+      document.querySelector(showing).style.display = "none";
+      document.querySelector(hiding).style.display = "block";
+    }, 400);
+    setTimeout(() => {
+      signIn.classList.remove("signin-animation");
+    }, 1000);
   }
 
   showAboutApp() {
@@ -19,8 +36,8 @@ class SignIn extends Component {
     return (
       <div>
         <h4>WELCOME</h4>
-        <div id="books-and-details">
-          <div className="sign-in webkit-scroll">
+        <div className="sign-in webkit-scroll">
+          <div className="intro-container card">
             <p>Hi, my name is Michael and I made an app!</p>
             <IntroVideo />
             <p className="link-text" onClick={this.showAboutApp}>
@@ -46,54 +63,56 @@ class SignIn extends Component {
                 journey!
               </p>
             </div>
-            <h6>Sign in using...</h6>
-
-            <div className="google">
-              <a
+          </div>
+          <div className="sign-in-help card">
+            <div className="social-login">
+              <button
+                className="btn btn-small sign-in-button"
+                onClick={this.showSignIn.bind(this)}
+              >
+                <i className="large material-icons">account_circle</i>
+                Sign in with Username
+              </button>
+              <div className="google btn btn-small sign-in-button">
+                <a
                 href="https://mikes-reading-list.herokuapp.com/auth/google"
                 className="btn"
               >
                 {/* FOR TESTING PURPOSES____________________________ */}
-                {/* <a href="http://localhost:4000/auth/google" className="btn"> */}
-                {/* FOR TESTING PURPOSES____________________________ */}
-                <img src={googleLogo} alt="Google Logo" /> Google
-              </a>
-            </div>
-            <div className="facebook">
-              <a
+                {/* <a href="http://localhost:4000/auth/google" className=""> */}
+                  {/* FOR TESTING PURPOSES____________________________ */}
+                  <img src={googleLogo} alt="Google Logo" /> Sign in with Google
+                </a>
+              </div>
+              <div className="facebook btn btn-small sign-in-button">
+                <a
                 href="https://mikes-reading-list.herokuapp.com/auth/facebook"
                 className="btn"
               >
                 {/* FOR TESTING PURPOSES____________________________ */}
-                {/* <a href="http://localhost:4000/auth/facebook" className="btn"> */}
-                {/* FOR TESTING PURPOSES____________________________ */}
-                <img src={facebookLogo} alt="Facebook Logo" /> Facebook
-              </a>
-            </div>
-            <div className="sign-in-help">
-              <button
-                className="btn btn-small btn-floating"
-                onClick={this.showHelpText}
-              >
-                Why?
-              </button>
-              <div className="sign-in-help-text">
-                I take your security and personal information seriously. Signing
-                in using Facebook or Google means that, in addition to not
-                having to remember another password, this app will never know
-                your password. Your user login will be encrypted and only a
-                valid decryption cookie lasting 24 hours will be able to unlock
-                your data keeping you "signed-in".
+                {/* <a href="http://localhost:4000/auth/facebook" className=""> */}
+                  {/* FOR TESTING PURPOSES____________________________ */}
+                  <img src={facebookLogo} alt="Facebook Logo" /> Sign in with
+                  Facebook
+                </a>
               </div>
             </div>
-            <div className="support-container">
-              If you like the app or see any issues please: <SupportLinks />
+            <div className="username-login">
+              <button
+                className="btn btn-small sign-in-button"
+                onClick={this.showSignIn.bind(this)}
+              >
+                Sign in with Social Media
+              </button>
+              <SignInEmailPassword />
             </div>
-            <div className="policy-container">
-              By signing into this app with any of the social links you create
-              an account and agree to the
-              <PolicyLinks />
-            </div>
+          </div>
+          <div className="support-container card">
+            <SupportLinks />
+          </div>
+          <div className="policy-container card">
+            By creating an account you agree to the
+            <PolicyLinks />
           </div>
         </div>
       </div>

@@ -11,25 +11,25 @@ body {
 }
 
 #root {
-  justify-content: center;
+  align-items: center;
   display: flex;
+  flex-direction: column;
 }
 
 #nav-tabs {
-  position: absolute;
+  position: relative;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  align-items: flex-end;
   width: auto;
-  height: 40px;
-  margin-top: 12.5px;
+  height: 8vh;
+  z-index: 99;
+  overflow: hidden;
 }
 .nav-tab {
   background: var(--my-color);
   color: white;
   padding: 6px 10px;
-  border-radius: 6px 6px 0 0;
-  margin: 3px;
+  max-height: 30px;
   box-shadow: 0px -3px 5px rgba(0, 0, 0, 0.2);
 }
 .selected-tab {
@@ -47,16 +47,22 @@ body {
   grid-template-columns: 1fr 1fr;
 }
 .sign-in {
-  grid-column: 1/3;
+  display: flex;
+  flex-direction: column;
   text-align: center;
-  height: 75vh;
+  align-items: center;
+  height: 80vh;
   max-height: 600px;
   overflow-y: scroll;
+  padding: 20px;
 }
 .webkit-scroll {
   -webkit-overflow-scrolling: touch;
 }
-
+.sign-in .card {
+  width: 100%;
+  max-width: 500px;
+}
 .link-text {
   color: var(--my-color);
   font-size: 16px;
@@ -69,6 +75,7 @@ body {
 .about-app {
   height: 1px;
   overflow: hidden;
+  padding: 8px;
 }
 .show-about-app {
   animation-name: showAboutApp;
@@ -86,30 +93,52 @@ body {
     height: auto;
   }
 }
-.sign-in,
 .sign-out,
 .stats-container {
   justify-content: center;
   padding: 30px;
 }
-.sign-in-help button {
-  font-size: 9px;
+
+.sign-in-help {
+  padding: 10px 20px;
 }
-.sign-in-help-text {
-  border: dashed 1px black;
-  padding: 5px 10px 10px 10px;
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.5);
-  width: 80%;
-  margin: 5px 0 0 10%;
-  font-size: 12px;
+
+.username-login,
+.social-login {
+  overflow: hidden;
+  width: 100%;
+}
+.username-login {
   display: none;
 }
+.signin-animation {
+  animation-name: signInAnimation;
+  animation-duration: 0.8s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes signInAnimation {
+  40% {
+    width: 1px;
+  }
+  50% {
+    width: 1px;
+    padding: 0px 0px;
+  }
+  100% {
+    width: 100%;
+    padding: 10px 20px;
+  }
+}
+
+.error-text {
+  color: red;
+}
+
 .policy-container,
 .support-container {
-  margin-top: 20px;
   padding: 10px;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+  position: unset !important;
 }
 .dash-policy-container {
   text-align: center;
@@ -134,10 +163,10 @@ body {
 #support-project,
 #report-bug {
   position: absolute;
-  top: 10px;
+  top: 2%;
   left: 50%;
-  height: 97%;
-  max-height: 700px;
+  height: 96%;
+  max-height: 800px;
   width: 96%;
   max-width: 700px;
   padding-top: 20px;
@@ -186,24 +215,37 @@ body {
   text-transform: uppercase;
   margin-top: 0;
 }
-.google,
-.facebook {
-  margin: 20px 0;
-}
 
+.sign-in-button {
+  margin: 10px 0;
+  text-align: left;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.google > a,
+.facebook > a {
+  color: white;
+}
 .google > a > img,
 .facebook > a > img {
-  height: 20px;
-  margin-right: 20px;
-  transform: translate(0, 5px);
+  height: 60px;
+  transform: translate(-30px, -10px);
+  opacity: 0.5;
+  position: absolute;
+  left: 40px;
+}
+
+.sign-in-button > i {
+  transform: translate(-10px, 0px) scale(4);
+  opacity: 0.5;
+  position: absolute;
+  left: 40px;
 }
 
 .stat-outer-container {
-  margin-top: 10px;
   border: dashed 1px black;
   padding: 5px 10px 10px 10px;
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.5);
 }
 
 .section-title-container {
@@ -241,8 +283,12 @@ body {
   transform: translate(-50%, 0);
   border-radius: 6px;
 }
+.profile-info > button {
+  margin-left: 50%;
+  transform: translate(-50%, 0);
+}
 .profile-info > div {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(155, 155, 155, 0.2);
   padding: 5px;
   border: dashed 1px black;
   border-radius: 3px;
@@ -274,7 +320,7 @@ h5.food-titles,
   color: #444;
   text-align: center;
   margin: 0;
-  height: 8%;
+  height: 10vh;
   border-bottom: dashed 1px black;
   cursor: pointer;
 }
@@ -291,9 +337,7 @@ h5.food-titles {
   height: 80vh;
 }
 #main {
-  margin: 50px 0 0 0;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
   overflow: hidden;
   box-sizing: border-box;
   width: 700px;
@@ -600,6 +644,17 @@ h5.food-titles {
     margin-left: 5px;
   }
 }
+@media only screen and (max-height: 500px) {
+  #main h4 {
+    padding-top: 5px;
+  }
+}
+@media only screen and (max-height: 380px) {
+  #main h4 {
+    font-size: 24px;
+  }
+}
+
 /* OVERRIDE MATERIALIZE CSS STUFF */
 .row {
   margin-bottom: 10px !important;
@@ -663,4 +718,8 @@ textarea.materialize-textarea:focus:not([readonly]) {
 }
 .modal-overlay {
   opacity: 0 !important;
+}
+[type="checkbox"]:checked + span:not(.lever):before {
+  border-right: 2px solid var(--my-color) !important;
+  border-bottom: 2px solid var(--my-color) !important;
 }

@@ -16,7 +16,6 @@ import DisplayListItems from "../Reusable/DisplayListItems";
 //functions
 import { selectThis } from "../util_functions/selectThis";
 import { selectList } from "../util_functions/selectList";
-import CompleteItem from "../Reusable/CompletedButton";
 
 class Todos extends Component {
   constructor(props) {

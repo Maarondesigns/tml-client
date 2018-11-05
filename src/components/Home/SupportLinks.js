@@ -15,8 +15,8 @@ const SupportLinks = () => {
         }}
       >
         Support this Project
-      </span>{" "}
-      //{" "}
+      </span>
+      <span> || </span>
       <span
         className="link-text"
         onClick={() => {

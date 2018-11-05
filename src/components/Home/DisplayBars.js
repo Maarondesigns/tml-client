@@ -31,7 +31,7 @@ const DisplayBars = ({ incomplete, complete, type }) => {
     maxWidth: "20px"
   };
   return (
-    <div className="stat-outer-container">
+    <div className="stat-outer-container card">
       <div className="section-title-container">
         <div className="stat-section-title">{type}</div>
       </div>

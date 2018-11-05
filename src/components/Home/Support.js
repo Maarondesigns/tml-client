@@ -19,6 +19,7 @@ const Support = () => {
           <strong>Thank you for supporting this project!</strong>
         </h6>
         <iframe
+          title="giphy"
           src="https://giphy.com/embed/IcGkqdUmYLFGE"
           width="80%"
           frameBorder="0"

@@ -13,14 +13,10 @@ import Home from "./components/Home/Home";
 //apollo client setup
 const client = new ApolloClient({
   uri: "https://mikes-reading-list.herokuapp.com/graphql",
+  // uri: "http://localhost:4000/graphql",
   credentials: "include"
 });
-//FOR TESTING PURPOSES____________________________
-// const client = new ApolloClient({
-//   uri: "http://localhost:4000/graphql",
-//   credentials: "include"
-// });
-//FOR TESTING PURPOSES____________________________
+
 class App extends Component {
   render() {
     return (

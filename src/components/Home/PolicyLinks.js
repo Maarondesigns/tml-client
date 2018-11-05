@@ -15,8 +15,8 @@ const PolicyLinks = () => {
         }}
       >
         Privacy Policy
-      </span>{" "}
-      //{" "}
+      </span>
+      <span> || </span>
       <span
         className="link-text"
         onClick={() => {
