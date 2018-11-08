@@ -1,5 +1,6 @@
 import React from "react";
 import { hidePolicy } from "../util_functions/hidePolicy";
+import gif from "../../img/cbh38-9izho.gif";
 
 const Support = () => {
   return (
@@ -18,14 +19,7 @@ const Support = () => {
         <h6>
           <strong>Thank you for supporting this project!</strong>
         </h6>
-        <iframe
-          title="giphy"
-          src="https://giphy.com/embed/IcGkqdUmYLFGE"
-          width="80%"
-          frameBorder="0"
-          className="giphy-embed"
-          allowFullScreen
-        />
+        <img src={gif} alt="" className="thanks-gif" />
         <p>
           {" "}
           I am just one humble human trying to make something useful.Any amount

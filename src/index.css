@@ -205,9 +205,14 @@ body {
 }
 
 #support-project,
-#report-bug,
-.thanks-for-supporting {
+#report-bug{
   padding: 20px;
+}
+
+.thanks-gif {
+  width: 100%;
+  max-width: 400px;
+  margin-top: 20px;
 }
 
 .user-dashboard h5 {
@@ -274,7 +279,6 @@ body {
 }
 
 .profile-info {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 20px;
 }
 .profile-info > img {
@@ -313,13 +317,13 @@ body {
 }
 #main h4 {
   padding-top: 15px;
+  height: 10vh;
 }
 h5.food-titles,
 #main h4 {
   color: #444;
   text-align: center;
   margin: 0;
-  height: 10vh;
   border-bottom: dashed 1px black;
   cursor: pointer;
 }
@@ -331,6 +335,7 @@ h5.food-titles {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 8%;
 }
 #home {
   height: 80vh;
