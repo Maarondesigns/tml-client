@@ -35,7 +35,6 @@ class AddGrocery extends Component {
 
     new Promise(() => showAddForms()).then(selectList("grocery"));
 
-    console.log(this.props.getUserQuery);
     this.props
       .addGroceryMutation({
         variables: {

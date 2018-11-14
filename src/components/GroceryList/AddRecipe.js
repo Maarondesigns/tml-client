@@ -11,6 +11,7 @@ import { getUserQuery } from "../../queries/userqueries";
 //functions
 import { selectList } from "../util_functions/selectList";
 import { showAddForms } from "../util_functions/showAddForms";
+import { fixAddFormHeight } from "../util_functions/fixAddFormHeight";
 
 class AddRecipe extends Component {
   constructor(props) {
@@ -18,7 +19,7 @@ class AddRecipe extends Component {
     this.state = {
       name: "",
       instructions: "",
-      ingredients: ""
+      ingredients: []
     };
   }
 
@@ -60,7 +61,35 @@ class AddRecipe extends Component {
         let newRecipe = document.getElementById(newList[newList.length - 1].id);
         RecipeList.scrollTop = newRecipe.offsetTop;
         newRecipe.classList.add("slide-book-left");
+        //reset state
+        this.setState({
+          name: "",
+          instructions: "",
+          ingredients: []
+        });
       });
+  }
+
+  separateByComma(value) {
+    let array = value.split(",").map(x => x.trim());
+    let ingredientInput = document.getElementById("ingredients");
+    if (array.length > 1) {
+      ingredientInput.value = "";
+      this.setState({
+        ingredients: [...this.state.ingredients, array[0]]
+      });
+    }
+  }
+
+  removeIngredient(string) {
+    let filter = this.state.ingredients.filter(x => x !== string);
+    this.setState({
+      ingredients: filter
+    });
+  }
+
+  componentDidUpdate() {
+    fixAddFormHeight();
   }
 
   render() {
@@ -73,15 +102,30 @@ class AddRecipe extends Component {
                 id="ingredients"
                 type="text"
                 className="validate"
-                onChange={e => {
-                  this.setState({
-                    ingredients: e.target.value.split(",").map(x => x.trim())
-                  });
-                }}
+                onChange={e => this.separateByComma(e.target.value)}
               />
               <label className="active" htmlFor="ingredients">
-                Ingredients: Quantity (comma separated)
+                Quantity of Ingredient (comma separated)
               </label>
+              <div id="ingredient-list">
+                {this.state.ingredients.map((ing, i) => {
+                  return (
+                    <div key={i}>
+                      <div className="ing">{ing}</div>
+                      <div
+                        className="remove-ing"
+                        onClick={e =>
+                          this.removeIngredient(
+                            e.target.previousSibling.innerHTML
+                          )
+                        }
+                      >
+                        x
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
           <div className="row">

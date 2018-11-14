@@ -76,6 +76,24 @@ class Groceries extends Component {
   }
 
   componentWillUnmount() {
+    document.querySelectorAll(".book-li").forEach(li => {
+      let list = li.parentNode.parentNode.id;
+      if (list === "grocery-list") {
+        this.props.updateGroceryMutation({
+          variables: {
+            id: li.id,
+            order: +li.getAttribute("data-order")
+          }
+        });
+      } else if (list === "recipe-list") {
+        this.props.updateRecipeMutation({
+          variables: {
+            id: li.id,
+            order: +li.getAttribute("data-order")
+          }
+        });
+      }
+    });
     this.state.timeouts.forEach(timeout => clearTimeout(timeout));
   }
 

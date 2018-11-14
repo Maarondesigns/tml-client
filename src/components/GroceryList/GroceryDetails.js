@@ -72,6 +72,49 @@ class GroceryDetails extends Component {
     }
   }
 
+  addGroceriesFromRecipe() {
+    selectList("grocery");
+    const { recipe } = this.props.getRecipeQuery;
+    recipe.ingredients.forEach(ingredient => {
+      let name, quantity;
+      if (ingredient.includes("of")) {
+        let split = ingredient.split(" of ");
+        quantity = split[0];
+        name = split[1];
+      } else {
+        let split = ingredient.split(" ");
+        if (Number(split[0])) {
+          quantity = split[0];
+          name = split.splice(1).join(" ");
+        } else {
+          name = ingredient;
+          quantity = "";
+        }
+      }
+      console.log(name, quantity);
+      this.props
+        .addGroceryMutation({
+          variables: {
+            name: name,
+            quantity: quantity,
+            userId: this.props.getUserQuery.user.id
+          }
+        })
+        .then(() => this.props.getGroceriesQuery.refetch())
+        .then(data => {
+          let groceryList = document.getElementById("grocery-list");
+          let newList = data.data.groceries;
+          newList.forEach((x, i) => {
+            let newGrocery = document.getElementById(x.id);
+            groceryList.scrollTop = newGrocery.offsetTop;
+            setTimeout(() => {
+              newGrocery.classList.add("slide-book-left");
+            }, i * 50);
+          });
+        });
+    });
+  }
+
   componentDidUpdate() {
     let editIngredients = document.getElementById("edit-ingredients");
     let editInstructions = document.getElementById("edit-instructions");
@@ -164,34 +207,6 @@ class GroceryDetails extends Component {
     } else {
       return <div>No grocerys selected.</div>;
     }
-  }
-
-  addGroceriesFromRecipe() {
-    selectList("grocery");
-    const { recipe } = this.props.getRecipeQuery;
-    recipe.ingredients.forEach(ingredient => {
-      let item = ingredient.split(":");
-      this.props
-        .addGroceryMutation({
-          variables: {
-            name: item[0],
-            quantity: item[1],
-            userId: this.props.getUserQuery.user.id
-          }
-        })
-        .then(() => this.props.getGroceriesQuery.refetch())
-        .then(data => {
-          let groceryList = document.getElementById("grocery-list");
-          let newList = data.data.groceries;
-          newList.forEach((x, i) => {
-            let newGrocery = document.getElementById(x.id);
-            groceryList.scrollTop = newGrocery.offsetTop;
-            setTimeout(() => {
-              newGrocery.classList.add("slide-book-left");
-            }, i * 50);
-          });
-        });
-    });
   }
 
   render() {

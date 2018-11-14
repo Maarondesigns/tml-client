@@ -19,7 +19,7 @@ class Dash extends Component {
     }
   }
   logout() {
-    // fetch("http://192.168.0.8:4000/auth/logout", {
+    // fetch("http://localhost:4000/auth/logout", {
     fetch("https://mikes-reading-list.herokuapp.com/auth/logout", {
       redirect: "follow",
       credentials: "include",

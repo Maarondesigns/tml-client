@@ -9,6 +9,7 @@ import AddAuthor from "./AddAuthor";
 import { showAddForms } from "../util_functions/showAddForms";
 import { scrollToBottom } from "../util_functions/scrollToBottom";
 import { selectList } from "../util_functions/selectList";
+import { dragAndDrop } from "../util_functions/dragAndDrop";
 
 class ReadingList extends Component {
   constructor(props) {
@@ -25,6 +26,7 @@ class ReadingList extends Component {
 
   componentDidMount() {
     scrollToBottom();
+    dragAndDrop();
   }
   render() {
     return (

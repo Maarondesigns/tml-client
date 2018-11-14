@@ -30,7 +30,15 @@ class SignIn extends Component {
   }
 
   showAboutApp() {
-    document.querySelector(".about-app").classList.add("show-about-app");
+    let aboutApp = document.querySelector(".about-app");
+    let readMore = document.getElementById("read-more");
+    if (!aboutApp.classList.contains("show-about-app")) {
+      readMore.innerHTML = `Read Less <i class="material-icons tiny">arrow_upward</i>`;
+      aboutApp.classList.add("show-about-app");
+    } else {
+      aboutApp.classList.remove("show-about-app");
+      readMore.innerHTML = `Read More <i class="material-icons tiny">arrow_downward</i>`;
+    }
   }
   render() {
     return (
@@ -41,26 +49,27 @@ class SignIn extends Component {
             <p>Hi, my name is Michael and I made an app!</p>
             <IntroVideo />
             <p className="link-text" onClick={this.showAboutApp}>
-              Read More <i className="material-icons tiny">arrow_downward</i>
+              <span id="read-more">
+                Read More <i className="material-icons tiny">arrow_downward</i>
+              </span>
             </p>
             <div className="about-app">
               <p>
-                Have you found yourself constantly making different lists trying
-                to be productive, like me, but they always seem to get
-                disorganized? Sure there are plenty of nice todo list apps out
-                there, but they all force you to customize each list yourself
-                with catch-all functionality.
+                Are you like me? Do you find yourself constantly making
+                different lists, trying to be productive, but they always seem
+                to get disorganized? Sure there are plenty of nice "To Do" apps
+                out there, but they all force you to customize each list
+                yourself with catch-all functionality.
               </p>
               <p>
-                This app changes that. Every list type you find here has
-                different functionality that is best suited for that specific
-                list type. Currently with Todo, Reading, and Grocery/Recipe and
-                more type to continually be designed and added. As this is a new
-                endeavor I am looking for creative input and suggestions about
-                everything, new types of lists and features to add and make the
-                experience better, and even the name of the app itself. Sign up
-                below and become one of my first beta testers and part of the
-                journey!
+                This app changes that. Every list you find here has different
+                functionality that is best suited for that specific type of list
+                and more are being continually designed and added. We are always
+                looking for creative input and suggestions on new types of lists
+                and features to make the overall experience better. You can use
+                the "Report Bug" form to send us suggestions. Sign up with the
+                buttons below and become one of our first beta testers and part
+                of the journey!
               </p>
             </div>
           </div>
@@ -76,7 +85,7 @@ class SignIn extends Component {
               <div className="google btn btn-small sign-in-button">
                 <a href="https://mikes-reading-list.herokuapp.com/auth/google">
                   {/* FOR TESTING PURPOSES____________________________ */}
-                  {/* <a href="http://192.168.0.8:4000/auth/google"> */}
+                  {/* <a href="http://localhost:4000/auth/google"> */}
                   {/* FOR TESTING PURPOSES____________________________ */}
                   <img src={googleLogo} alt="Google Logo" /> Sign in with Google
                 </a>
@@ -84,7 +93,7 @@ class SignIn extends Component {
               <div className="facebook btn btn-small sign-in-button">
                 <a href="https://mikes-reading-list.herokuapp.com/auth/facebook">
                   {/* FOR TESTING PURPOSES____________________________ */}
-                  {/* <a href="http://192.168.0.8:4000/auth/facebook"> */}
+                  {/* <a href="http://localhost:4000/auth/facebook"> */}
                   {/* FOR TESTING PURPOSES____________________________ */}
                   <img src={facebookLogo} alt="Facebook Logo" /> Sign in with
                   Facebook

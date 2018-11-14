@@ -56,7 +56,15 @@ const DisplayListItems = ({
         (a, b) =>
           new Date(a.deadline).getTime() - new Date(b.deadline).getTime()
       );
+    } else {
+      incompleteItems.forEach(item => {
+        if (!item.order) {
+          item.order = 0;
+        }
+      });
+      incompleteItems.sort((a, b) => a.order - b.order);
     }
+
     return (
       <div>
         {incompleteItems.map((item, index) => {
@@ -84,10 +92,12 @@ const DisplayListItems = ({
               );
             }
           }
+
           return (
             <li
               className={"book-li li-type-" + type}
               id={item.id}
+              data-order={item.order}
               key={item.id}
             >
               <CompleteItem

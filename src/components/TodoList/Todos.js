@@ -49,11 +49,15 @@ class Todos extends Component {
     //MAKE ALL THE LIST ITEMS SLIDE LEFT ON PAGE LOAD
     let timeouts = [];
     this.props.getTodosQuery.refetch().then(data => {
-      data.data.todos.sort(
+      let { todos } = data.data;
+      let incompleted = todos.filter(todo => !todo.completed);
+      let completed = todos.filter(todo => todo.completed);
+      //sort incomplete todos and slide left first
+      incompleted.sort(
         (a, b) =>
           new Date(a.deadline).getTime() - new Date(b.deadline).getTime()
       );
-      data.data.todos.forEach((todo, index) => {
+      incompleted.forEach((todo, index) => {
         let el = document.getElementById(todo.id);
         timeouts.push(
           setTimeout(() => {
@@ -61,6 +65,16 @@ class Todos extends Component {
           }, 100 * index)
         );
       });
+      //slide all the completed onces left next
+      completed.forEach((todo, index) => {
+        let el = document.getElementById(todo.id);
+        timeouts.push(
+          setTimeout(() => {
+            el.classList.add("slide-book-left");
+          }, 100 * incompleted.length)
+        );
+      });
+      //timeouts are set in array in state to clear them if component unmounts before they fire
       this.setState({ timeouts: [...this.state.timeouts, timeouts] });
     });
   }

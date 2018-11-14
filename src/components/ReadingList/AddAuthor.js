@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { graphql, compose } from "react-apollo";
+
+//queries
 import {
   getAuthorsQuery,
   getBooksQuery,
@@ -7,6 +9,10 @@ import {
   addAuthorMutation
 } from "../../queries/bookqueries";
 import { getUserQuery } from "../../queries/userqueries";
+
+//functions
+import { selectList } from "../util_functions/selectList";
+import { showAddForms } from "../util_functions/showAddForms";
 
 class AddAuthor extends Component {
   constructor(props) {
@@ -21,10 +27,6 @@ class AddAuthor extends Component {
 
   submitBookAlso() {
     setTimeout(() => {
-      let author = this.props.getAuthorsQuery.authors.filter(
-        author => this.state.name === author.name
-      );
-
       let bookName = document.getElementById("book_name");
       let genre = document.getElementById("genre");
       let authorName = document.getElementById("first_name");
@@ -36,11 +38,15 @@ class AddAuthor extends Component {
       let text = authorName.nextSibling;
       let bookText = bookName.nextSibling;
 
+      let author = this.props.getAuthorsQuery.authors.filter(
+        author => authorName.value === author.name
+      );
+
       this.props
         .addBookMutation({
           variables: {
             name: bookName.value,
-            genre: genre.value,
+            genre: genre.value.split(",").map(x => x.trim()),
             authorId: author[0].id,
             userId: this.props.getUserQuery.user.id
           }
@@ -58,11 +64,15 @@ class AddAuthor extends Component {
           select.value = "Select Author";
           addAuth.style.display = "none";
           addBook.style.display = "initial";
-          let newList = data.data.books;
-          let newBook = document.getElementById(newList[newList.length - 1].id);
-
-          bookList.scrollTop = newBook.offsetTop;
-          newBook.classList.add("slide-book-left");
+          //scroll to new item position and slide left
+          let bookList = document.querySelector(".book-list");
+          let books = document.querySelectorAll(".book-li");
+          books.forEach(li => {
+            if (!li.classList.contains("slide-book-left")) {
+              li.classList.add("slide-book-left");
+            }
+          });
+          bookList.scrollTop = books[0].offsetTop;
         });
     }, 200);
   }
@@ -86,10 +96,12 @@ class AddAuthor extends Component {
       return;
     }
 
+    new Promise(() => showAddForms()).then(selectList("reading"));
+
     this.props
       .addAuthorMutation({
         variables: {
-          name: this.state.name,
+          name: authorName.value,
           age: this.state.age,
           userId: this.props.getUserQuery.user.id
         }

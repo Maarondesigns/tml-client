@@ -10,6 +10,7 @@ import { getUserQuery } from "../../queries/userqueries";
 import { selectList } from "../util_functions/selectList";
 import { showAddForms } from "../util_functions/showAddForms";
 import { showAddFormTwice } from "../util_functions/showAddFormTwice";
+import { fixAddFormHeight } from "../util_functions/fixAddFormHeight";
 
 class AddTodo extends Component {
   constructor(props) {
@@ -20,10 +21,12 @@ class AddTodo extends Component {
       deadline: ""
     };
   }
+  //GOODREADS API KEY:
+  //key: P10wSZ32weOVx3wYPUoog
+  // secret: ZRzYyKuhzCLUvaBDpkmG8Rz5f2RECZzvbwlRXZtnng
 
   componentDidMount() {
     var elems = document.querySelectorAll(".datepicker");
-    console.log(elems);
     M.Datepicker.init(elems, {
       format: "yyyy-mm-dd",
       container: "#datepicker-container",
@@ -37,6 +40,10 @@ class AddTodo extends Component {
       },
       onClose: () => showAddFormTwice()
     });
+  }
+
+  componentDidUpdate() {
+    fixAddFormHeight();
   }
 
   submitForm(e) {

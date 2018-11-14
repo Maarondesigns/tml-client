@@ -13,7 +13,7 @@ import Home from "./components/Home/Home";
 //apollo client setup
 const client = new ApolloClient({
   uri: "https://mikes-reading-list.herokuapp.com/graphql",
-  // uri: "http://192.168.0.8:4000/graphql",
+  // uri: "http://localhost:4000/graphql",
   credentials: "include"
 });
 

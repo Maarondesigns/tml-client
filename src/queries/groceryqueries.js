@@ -7,6 +7,7 @@ const getGroceriesQuery = gql`
       id
       quantity
       completed
+      order
     }
   }
 `;
@@ -18,6 +19,7 @@ const getRecipesQuery = gql`
       instructions
       ingredients
       completed
+      order
     }
   }
 `;
@@ -88,18 +90,26 @@ const getRecipeQuery = gql`
 `;
 
 const updateGroceryMutation = gql`
-  mutation($id: ID, $name: String, $quantity: String, $completed: Boolean) {
+  mutation(
+    $id: ID
+    $name: String
+    $quantity: String
+    $completed: Boolean
+    $order: Int
+  ) {
     updateGrocery(
       id: $id
       name: $name
       quantity: $quantity
       completed: $completed
+      order: $order
     ) {
       id
       name
       quantity
       userId
       completed
+      order
     }
   }
 `;
@@ -111,6 +121,7 @@ const updateRecipeMutation = gql`
     $instructions: String
     $ingredients: [String]
     $completed: Boolean
+    $order: Int
   ) {
     updateRecipe(
       id: $id
@@ -118,6 +129,7 @@ const updateRecipeMutation = gql`
       instructions: $instructions
       ingredients: $ingredients
       completed: $completed
+      order: $order
     ) {
       id
       name
@@ -125,6 +137,7 @@ const updateRecipeMutation = gql`
       ingredients
       userId
       completed
+      order
     }
   }
 `;

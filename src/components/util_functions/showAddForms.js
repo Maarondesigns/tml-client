@@ -16,7 +16,7 @@ export function showAddForms() {
       .transition()
       .duration(300)
       .styleTween("height", () => {
-        return interpolateString(currentHeight + "px", fullHeight + "px");
+        return interpolateString(currentHeight + "px", fullHeight + 40 + "px");
       });
 
     d3.select("#add-button").html("-");

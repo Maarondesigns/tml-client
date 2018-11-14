@@ -9,6 +9,8 @@ const getUserQuery = gql`
       email
       id
       avatar
+      bio
+      links
       password
     }
   }
@@ -25,6 +27,8 @@ const updateUserMutation = gql`
     $googleId: String
     $facebookId: String
     $avatar: String
+    $bio: String
+    $links: [String]
   ) {
     updateUser(
       id: $id
@@ -36,11 +40,15 @@ const updateUserMutation = gql`
       googleId: $googleId
       facebookId: $facebookId
       avatar: $avatar
+      bio: $bio
+      links: $links
     ) {
       id
       username
       email
       avatar
+      bio
+      links
       password
     }
   }

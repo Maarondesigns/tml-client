@@ -98,6 +98,7 @@ class Books extends Component {
       if (this.state.filter !== null) {
         books = this.state.filter;
       }
+      books.sort((a, b) => a.order - b.order);
       books.forEach((book, index) => {
         let el = document.getElementById(book.id);
         timeouts.push(
@@ -111,11 +112,20 @@ class Books extends Component {
       this.setState({ timeouts: [...this.state.timeouts, timeouts] });
     });
   }
+
   componentDidMount() {
     this.slideBookLeft();
   }
 
   componentWillUnmount() {
+    document.querySelectorAll(".book-li").forEach(li => {
+      this.props.updateBookMutation({
+        variables: {
+          id: li.id,
+          order: +li.getAttribute("data-order")
+        }
+      });
+    });
     this.state.timeouts.forEach(timeout => clearTimeout(timeout));
   }
 

@@ -7,6 +7,7 @@ const getBooksQuery = gql`
       id
       genre
       completed
+      order
       author {
         id
         name
@@ -41,11 +42,24 @@ const addBookMutation = gql`
 `;
 
 const updateBookMutation = gql`
-  mutation($id: ID, $name: String, $genre: [String], $completed: Boolean) {
-    updateBook(id: $id, name: $name, genre: $genre, completed: $completed) {
+  mutation(
+    $id: ID
+    $name: String
+    $genre: [String]
+    $completed: Boolean
+    $order: Int
+  ) {
+    updateBook(
+      id: $id
+      name: $name
+      genre: $genre
+      completed: $completed
+      order: $order
+    ) {
       name
       id
       completed
+      order
     }
   }
 `;

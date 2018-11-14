@@ -1,28 +1,40 @@
 import React, { Component } from "react";
 import { graphql, compose } from "react-apollo";
+import M from "materialize-css";
 
 //queries
 import { updateUserMutation, getUserQuery } from "../../queries/userqueries";
 
+//functions
+import { mapUrlToIcons } from "../util_functions/mapUrlToIcons";
+
 class ProfileInfo extends Component {
-  state = {
-    updating: false,
-    username: "",
-    email: "",
-    avatar: "",
-    password: "",
-    new_pass: "",
-    verify_pass: ""
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      updating: false,
+      username: "",
+      email: "",
+      bio: "",
+      links: props.user.links,
+      password: "",
+      new_pass: "",
+      verify_pass: ""
+    };
+  }
 
   displayId() {
     let signInMethod;
-    if (this.props.user.googleId) {
-      signInMethod = "Google";
-    } else if (this.props.user.facebookId) {
-      signInMethod = "Facebook";
+    if (this.props.user.googleId && !this.props.user.password) {
+      signInMethod = "Google only";
+    } else if (this.props.user.facebookId && !this.props.user.password) {
+      signInMethod = "Facebook only";
+    } else if (this.props.user.googleId && this.props.user.password) {
+      signInMethod = "Google and username/email";
+    } else if (this.props.user.facebookId && this.props.user.password) {
+      signInMethod = "Facebook and username/email";
     } else {
-      signInMethod = "Username/Email";
+      signInMethod = "Username/Email only";
     }
     return <div>{"Connected using " + signInMethod}</div>;
   }
@@ -33,6 +45,61 @@ class ProfileInfo extends Component {
       container.style.display = "block";
     } else {
       container.style.display = "none";
+    }
+  }
+
+  addLinks() {
+    function addAnotherLink() {
+      let input = document.getElementById("add-link-input");
+      if (!input.value.match(/^http/)) {
+        alert("Please include http:// or https://");
+      } else {
+        this.setState({ links: [...this.state.links, input.value] });
+        input.value = "";
+      }
+    }
+    let editingIcons = mapUrlToIcons(this.state.links).map(icon => {
+      return (
+        <div>
+          {icon}
+          <div
+            className="delete-social-icons"
+            onClick={e => {
+              //get the href link of the icon and remove any trailing '/'
+              let removeUrl = e.target.previousSibling.childNodes[0].href.replace(
+                /\/$/,
+                ""
+              );
+              //filter that url from links array and set state to new filter
+              let linksFilter = this.state.links.filter(
+                link => link !== removeUrl
+              );
+              this.setState({ links: linksFilter });
+            }}
+          >
+            x
+          </div>
+        </div>
+      );
+    });
+
+    return (
+      <div id="add-links-container">
+        <input id="add-link-input" type="text" />
+        <div id="links-icons">
+          <div className="btn btn-small" onClick={addAnotherLink.bind(this)}>
+            <i className="material-icons">add</i>
+          </div>
+          {editingIcons}
+        </div>
+      </div>
+    );
+  }
+
+  componentDidUpdate() {
+    let editBio = document.getElementById("edit-user-bio");
+    if (editBio) {
+      M.textareaAutoResize(editBio);
     }
   }
 
@@ -55,7 +122,8 @@ class ProfileInfo extends Component {
     //only set what needs to be changed
     if (this.state.username) user["username"] = this.state.username;
     if (this.state.email) user["email"] = this.state.email;
-    if (this.state.avatar) user["avatar"] = this.state.avatar;
+    if (this.state.bio) user["bio"] = this.state.bio;
+    if (this.state.links) user["links"] = this.state.links;
     //if changing password make sure no typo
     if (this.state.new_pass) {
       if (this.state.new_pass !== this.state.verify_pass) {
@@ -65,6 +133,7 @@ class ProfileInfo extends Component {
         user["new_pass"] = this.state.new_pass;
       }
     }
+
     this.props
       .updateUserMutation({
         variables: user
@@ -75,7 +144,8 @@ class ProfileInfo extends Component {
           updating: false,
           username: "",
           email: "",
-          avatar: "",
+          bio: "",
+          links: this.props.user.links,
           password: "",
           new_pass: "",
           verify_pass: ""
@@ -89,6 +159,10 @@ class ProfileInfo extends Component {
         <React.Fragment>
           <div>Username: {this.props.user.username}</div>
           <div>Email: {this.props.user.email}</div>
+          <div>Bio: {this.props.user.bio}</div>
+          <div>
+            Links: <div id="links-icons">{mapUrlToIcons(this.state.links)}</div>
+          </div>
           {this.displayId()}
           <button
             className="btn btn-small"
@@ -113,6 +187,15 @@ class ProfileInfo extends Component {
             defaultValue={this.props.user.email}
             onChange={e => this.setState({ email: e.target.value })}
           />
+          Bio:{" "}
+          <textarea
+            type="text"
+            className="materialize-textarea"
+            id="edit-user-bio"
+            defaultValue={this.props.user.bio}
+            onChange={e => this.setState({ bio: e.target.value })}
+          />
+          Links: {this.addLinks()}
           Password:{" "}
           <input
             type="password"
